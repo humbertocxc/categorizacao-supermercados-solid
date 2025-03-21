@@ -23,8 +23,9 @@ export class ProductKeyExtractor {
 
         this.words.forEach((word: string, index: number) => {
             if (!this.ignoredWords.has(word) && !processedWords.has(word)) {
+                const isWeightOrVolume = this.weightPattern.test(word) || this.volumePattern.test(word);
                 this.processors.forEach(processor => processor.process(word, index));
-                if (!this.size || !this.size.startsWith(word)) {
+                if (!isWeightOrVolume && (!this.size || !this.size.startsWith(word))) {
                     this.significantWords.add(word);
                 }
                 processedWords.add(word);

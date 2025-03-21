@@ -1,3 +1,3 @@
 export interface UnitStrategy {
-    standardize(unit: string): string;
+    standardize(unit: string, value: string): string;
 }

@@ -7,8 +7,8 @@ export class ProductCategorizer {
         return this.transformCategoriesToResult(categories);
     }
 
-    private groupProductsByCategory(products: Product[]): Map<string, { products: { title: string; supermarket: string }[]; canonicalName: string }> {
-        const categories: Map<string, { products: { title: string; supermarket: string }[]; canonicalName: string }> = new Map();
+    private groupProductsByCategory(products: Product[]): Map<string, { products: { title: string; supermarket: string; price: number }[]; canonicalName: string }> {
+        const categories: Map<string, { products: { title: string; supermarket: string; price: number }[]; canonicalName: string }> = new Map();
 
         products.forEach((product: Product) => {
             const key: string = extractProductKey(product.title);
@@ -22,14 +22,15 @@ export class ProductCategorizer {
 
             categories.get(key)!.products.push({
                 title: product.title,
-                supermarket: product.supermarket
+                supermarket: product.supermarket,
+                price: product.price
             });
         });
 
         return categories;
     }
 
-    private transformCategoriesToResult(categories: Map<string, { products: { title: string; supermarket: string }[]; canonicalName: string }>): CategorizedProduct[] {
+    private transformCategoriesToResult(categories: Map<string, { products: { title: string; supermarket: string; price: number }[]; canonicalName: string }>): CategorizedProduct[] {
         return Array.from(categories.entries()).map(([_, data]) => ({
             category: data.canonicalName,
             count: data.products.length,

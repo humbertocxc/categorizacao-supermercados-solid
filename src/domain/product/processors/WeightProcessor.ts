@@ -3,17 +3,19 @@ import { UnitStrategy } from '../../../interfaces/UnitStrategy';
 import { ProductKeyExtractor } from '../ProductKeyExtractor';
 
 class WeightUnitStrategy implements UnitStrategy {
-    private unitMap: { [key: string]: string } = {
-        'quilo': 'kg',
-        'quilos': 'kg',
-        'kg': 'kg',
-        'grama': 'g',
-        'gramas': 'g',
-        'g': 'g'
+    private unitConversion: { [key: string]: number } = {
+        'quilo': 1000,
+        'quilos': 1000,
+        'kg': 1000,
+        'grama': 1,
+        'gramas': 1,
+        'g': 1
     };
 
-    standardize(unit: string): string {
-        return this.unitMap[unit] || unit;
+    standardize(unit: string, number: string): string {
+        const num = parseInt(number, 10);
+        const grams = this.unitConversion[unit] ? num * this.unitConversion[unit] : num;
+        return `${grams}g`;
     }
 }
 
@@ -28,7 +30,7 @@ export class WeightProcessor implements WordProcessor {
         const match = word.match(this.extractor.weightPattern);
         if (match) {
             const number = match[1];
-            let unit = match[2] || match[3] || '';
+            let unit = match[2] || '';
 
             if (!unit && index < this.extractor.words.length - 1) {
                 const nextWord = this.extractor.words[index + 1];
@@ -39,8 +41,7 @@ export class WeightProcessor implements WordProcessor {
             }
 
             if (unit) {
-                const standardizedUnit = this.unitStrategy.standardize(unit);
-                this.extractor.size = `${number}${standardizedUnit}`;
+                this.extractor.size = this.unitStrategy.standardize(unit, number);
             }
         }
     }
