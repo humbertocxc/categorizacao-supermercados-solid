@@ -7,5 +7,5 @@
         "lib": ["es5", "dom"],
         "outDir": "./dist"
     },
-    "include": ["*.ts", "src/categorizer.ts"]
+    "include": ["*.ts", "src/**/*.ts"]
 }
